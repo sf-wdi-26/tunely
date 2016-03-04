@@ -38,7 +38,23 @@ $(document).ready(function() {
   sampleAlbums.forEach(function (element) {
     renderAlbum(element);
   });
+
+
+  $('#album-form form').on('submit', function(e) {
+    e.preventDefault();
+    var formData = $(this).serialize();
+    console.log('formData', formData);
+    $.post('/api/albums', formData, function(album) {
+      console.log('album after POST', album);
+      renderAlbum(album);  //render the server's response
+    });
+    $(this).trigger("reset");
+  });
+
 });
+
+
+
 
 // this function takes a single album and renders it to the page
 function renderAlbum(album) {
