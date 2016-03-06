@@ -6,9 +6,10 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+
 // serve static files from public folder
 app.use(express.static(__dirname + '/public'));
-
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /************
  * DATABASE *
@@ -50,13 +51,55 @@ app.get('/api/albums', function albumsIndex(req, res) {
   });
 });
 
-app.post('/api/albums', function albumCreate(req, res){
+app.post('/api/albums', function albumCreate(req, res) {
+  console.log('body', req.body);
+
+  // split at comma and remove and trailing space
+  var genres = req.body.genres.split(',').map(function(item) { return item.trim(); } );
+  req.body.genres = genres;
+
   db.Album.create(req.body, function(err, album) {
     if (err) { console.log('error', err); }
-        console.log(album);
-        res.json(album);
-    });
+    console.log(album);
+    res.json(album);
+  });
+
 });
+
+
+app.get('/api/albums/:id', function albumShow(req, res) {
+  console.log('requested album id=', req.params.id);
+  db.Album.findOne({_id: req.params.id}, function(err, album) {
+    res.json(album);
+  });
+});
+
+
+app.post('/api/albums/:albumId/songs', function songsCreate(req, res) {
+  console.log('body', req.body);
+  db.Album.findOne({_id: req.params.albumId}, function(err, album) {
+    if (err) { console.log('error', err); }
+
+    var song = new db.Song(req.body);
+    album.songs.push(song);
+    album.save(function(err, savedAlbum) {
+      if (err) { console.log('error', err); }
+      console.log('album with new song saved:', savedAlbum);
+      res.json(song);
+    });
+  });
+});
+
+app.delete('/api/albums/:id', function deleteAlbum(req, res) {
+  console.log('deleting id: ', req.params.id);
+  db.Album.remove({_id: req.params.id}, function(err) {
+    if (err) { return console.log(err); }
+    console.log("removal of id=" + req.params.id  + " successful.");
+    res.status(200).send(); // everything is a-OK
+  });
+});
+
+
 
 /**********
  * SERVER *
