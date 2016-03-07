@@ -37,8 +37,15 @@ $(document).ready(function() {
 
   $('#saveSong').on('click', handleNewSongSubmit);
 
+  $('#albums').on('click', '.edit-album', handleEditAlbumClick);
+
+  $('#albums').on('click', '.put-album', handleSaveChangesClick);
+
   $('#albums').on('click', '.delete-album', handleDeleteAlbumClick);
 
+  $('#editSongsModal').on('click', '.delete-song', handleDeleteSongClick);
+
+  $('#editSongsModal').on('submit', 'form', handleUpdateSong);
 });
 
 
@@ -104,7 +111,27 @@ function buildSongsHtml(songs) {
   return songsHtml;
 }
 
+function generateEditSongsModalHtml(songs, albumId) {
+  var html = '';
+  songs.forEach(function(song) {
+    html += '<form class="form-inline" id="' + albumId  + '"' +
+            '  <div class="form-group">' +
+            '    <input type="text" class="form-control song-trackNumber" value="' + song.trackNumber + '">' +
+            '  </div>'+
+            '  <div class="form-group">' +
+            '    <input type="text" class="form-control song-name" value="' + song.name + '">' +
+            '  </div>'+
+            '  <div class="form-group">' +
+            '    <button class="btn btn-danger delete-song" data-song-id="' + song._id + '">x</button>' +
+            '  </div>'+
+            '  <div class="form-group">' +
+            '    <button type="submit" class="btn btn-success save-song" data-song-id="' + song._id + '">save</span></button>' +
+            '  </div>'+
+            '</form>';
+  });
 
+  return html;
+}
 
 // this function takes a single album and renders it to the page
 function renderAlbum(album) {

@@ -99,6 +99,23 @@ app.delete('/api/albums/:id', function deleteAlbum(req, res) {
   });
 });
 
+app.put('/api/albums/:albumId/songs/:id', function(req, res) {
+  var albumId = req.params.albumId;
+  var songId = req.params.id;
+  db.Album.findOne({_id: albumId}, function (err, foundAlbum) {
+    // find song embedded in album
+    var foundSong = foundAlbum.songs.id(songId);
+    foundSong.name = req.body.name;
+    foundSong.trackNumber = req.body.trackNumber;
+
+    // save changes
+    foundAlbum.save(function(err, saved) {
+      if(err) { console.log('error', err); }
+      res.json(saved);
+    });
+  });
+});
+
 
 
 /**********
