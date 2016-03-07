@@ -44,9 +44,9 @@ $(document).ready(function() {
   $('#albums').on('click', '.delete-album', handleDeleteAlbumClick);
 
 // <<<<<<< HEAD
-//   $('#editSongsModal').on('click', '.delete-song', handleDeleteSongClick);
+// $('#editSongsModal').on('click', '.delete-song', handleDeleteSongClick);
 //
-//   $('#editSongsModal').on('submit', 'form', handleUpdateSong);
+// $('#editSongsModal').on('submit', 'form', handleUpdateSong);
 // =======
 // >>>>>>> 1287528d43824fb0cda1d0b15744dda51d011712
 // >>>>>>> ed0a45aabe0373849ea687056192b549d25e8cfd
