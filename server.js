@@ -4,46 +4,18 @@
 var express = require('express');
 // generate a new express app and call it 'app'
 var app = express();
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 
 // serve static files from public folder
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /************
  * DATABASE *
  ************/
 
-/* hard-coded data */
-var albums = [];
-albums.push({
-              _id: 132,
-              artistName: 'Nine Inch Nails',
-              name: 'The Downward Spiral',
-              releaseDate: '1994, March 8',
-              genres: [ 'industrial', 'industrial metal' ]
-            });
-albums.push({
-              _id: 133,
-              artistName: 'Metallica',
-              name: 'Metallica',
-              releaseDate: '1991, August 12',
-              genres: [ 'heavy metal' ]
-            });
-albums.push({
-              _id: 134,
-              artistName: 'The Prodigy',
-              name: 'Music for the Jilted Generation',
-              releaseDate: '1994, July 4',
-              genres: [ 'electronica', 'breakbeat hardcore', 'rave', 'jungle' ]
-            });
-albums.push({
-              _id: 135,
-              artistName: 'Johnny Cash',
-              name: 'Unchained',
-              releaseDate: '1996, November 5',
-              genres: [ 'country', 'rock' ]
-            });
-
-
+var db = require('./models');
 
 /**********
  * ROUTES *
@@ -72,6 +44,79 @@ app.get('/api', function api_index (req, res){
     ]
   });
 });
+
+app.get('/api/albums', function albumsIndex(req, res) {
+  db.Album.find({}, function(err, albums) {
+    res.json(albums);
+  });
+});
+
+app.post('/api/albums', function albumCreate(req, res) {
+  console.log('body', req.body);
+
+  // split at comma and remove and trailing space
+  var genres = req.body.genres.split(',').map(function(item) { return item.trim(); } );
+  req.body.genres = genres;
+
+  db.Album.create(req.body, function(err, album) {
+    if (err) { console.log('error', err); }
+    console.log(album);
+    res.json(album);
+  });
+
+});
+
+
+app.get('/api/albums/:id', function albumShow(req, res) {
+  console.log('requested album id=', req.params.id);
+  db.Album.findOne({_id: req.params.id}, function(err, album) {
+    res.json(album);
+  });
+});
+
+
+app.post('/api/albums/:albumId/songs', function songsCreate(req, res) {
+  console.log('body', req.body);
+  db.Album.findOne({_id: req.params.albumId}, function(err, album) {
+    if (err) { console.log('error', err); }
+
+    var song = new db.Song(req.body);
+    album.songs.push(song);
+    album.save(function(err, savedAlbum) {
+      if (err) { console.log('error', err); }
+      console.log('album with new song saved:', savedAlbum);
+      res.json(song);
+    });
+  });
+});
+
+app.delete('/api/albums/:id', function deleteAlbum(req, res) {
+  console.log('deleting id: ', req.params.id);
+  db.Album.remove({_id: req.params.id}, function(err) {
+    if (err) { return console.log(err); }
+    console.log("removal of id=" + req.params.id  + " successful.");
+    res.status(200).send(); // everything is a-OK
+  });
+});
+
+app.put('/api/albums/:albumId/songs/:id', function(req, res) {
+  var albumId = req.params.albumId;
+  var songId = req.params.id;
+  db.Album.findOne({_id: albumId}, function (err, foundAlbum) {
+    // find song embedded in album
+    var foundSong = foundAlbum.songs.id(songId);
+    foundSong.name = req.body.name;
+    foundSong.trackNumber = req.body.trackNumber;
+
+    // save changes
+    foundAlbum.save(function(err, saved) {
+      if(err) { console.log('error', err); }
+      res.json(saved);
+    });
+  });
+});
+
+
 
 /**********
  * SERVER *
