@@ -75,6 +75,13 @@ app.get('/api/albums/:id', function albumShow(req, res) {
 });
 
 
+app.get('/api/albums/:id/songs', function albumShow(req, res) {
+  console.log('requested album id=', req.params.id);
+  db.Album.findOne({_id: req.params.id}, function(err, album) {
+    res.json(album.songs);
+  });
+});
+
 app.post('/api/albums/:albumId/songs', function songsCreate(req, res) {
   console.log('body', req.body);
   db.Album.findOne({_id: req.params.albumId}, function(err, album) {
@@ -99,6 +106,23 @@ app.delete('/api/albums/:id', function deleteAlbum(req, res) {
   });
 });
 
+app.put('/api/albums/:id', function updateAlbum(req, res) {
+  console.log('updating id ', req.params.id);
+  console.log('received body ', req.body);
+
+  db.Album.findOne({_id: req.params.id}, function(err, foundAlbum) {
+    if (err) { console.log('error', err); }
+    foundAlbum.artistname = req.body.artistName;
+    foundAlbum.name = req.body.name;
+    foundAlbum.releaseDate = req.body.releaseDate;
+    foundAlbum.save(function(err, saved) {
+      if(err) { console.log('error', err); }
+      res.json(saved);
+    });
+  });
+});
+
+
 app.put('/api/albums/:albumId/songs/:id', function(req, res) {
   var albumId = req.params.albumId;
   var songId = req.params.id;
@@ -108,6 +132,27 @@ app.put('/api/albums/:albumId/songs/:id', function(req, res) {
     foundSong.name = req.body.name;
     foundSong.trackNumber = req.body.trackNumber;
 
+    // save changes
+    foundAlbum.save(function(err, saved) {
+      if(err) { console.log('error', err); }
+      res.json(saved);
+    });
+  });
+});
+
+
+
+app.delete('/api/albums/:albumId/songs/:id', function(req, res) {
+  var albumId = req.params.albumId;
+  var songId = req.params.id;
+  console.log(req.params);
+  db.Album.findOne({_id: albumId}, function (err, foundAlbum) {
+    if (err) {console.log(error, err);}
+    // find song embedded in album
+    var foundSong = foundAlbum.songs.id(songId);
+
+    // delete
+    foundSong.remove();
     // save changes
     foundAlbum.save(function(err, saved) {
       if(err) { console.log('error', err); }
