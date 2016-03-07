@@ -43,9 +43,13 @@ $(document).ready(function() {
 
   $('#albums').on('click', '.delete-album', handleDeleteAlbumClick);
 
-  $('#editSongsModal').on('click', '.delete-song', handleDeleteSongClick);
-
-  $('#editSongsModal').on('submit', 'form', handleUpdateSong);
+// <<<<<<< HEAD
+//   $('#editSongsModal').on('click', '.delete-song', handleDeleteSongClick);
+//
+//   $('#editSongsModal').on('submit', 'form', handleUpdateSong);
+// =======
+// >>>>>>> 1287528d43824fb0cda1d0b15744dda51d011712
+// >>>>>>> ed0a45aabe0373849ea687056192b549d25e8cfd
 });
 
 
@@ -132,6 +136,7 @@ function generateEditSongsModalHtml(songs, albumId) {
 
   return html;
 }
+
 
 // this function takes a single album and renders it to the page
 function renderAlbum(album) {
