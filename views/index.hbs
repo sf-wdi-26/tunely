@@ -16,7 +16,8 @@
 
     <!-- APPLICATION SCRIPTS -->
     <script src="js/app.js"></script>
-  </head>
+
+
   <body>
     <div class="jumbotron">
       <div class="container">
@@ -24,6 +25,80 @@
         <p>Your music binder!</p>
       </div>
     </div>
+
+
+    <!-- BEGIN FORM SAMPLE -->
+    <div class="fb-login">
+        {{#if user }}
+            {{user.fb.firstName}} {{user.fb.lastName}},
+          <a href="/logout">Logout</a>
+        {{else}}
+          <a href="/auth/facebook">Login with Facebook</a>
+        {{/if}}
+    </div>
+    <section id='album-form' class="container">
+      <div class="row">
+      <div class="col-md-10 col-md-offset-1">
+
+        <form class="form-horizontal">
+          <fieldset>
+
+            <!-- Form Name -->
+            <legend>Add New Album</legend>
+
+            <!-- Text input-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="name">Album Name</label>
+              <div class="col-md-4">
+              <input id="name" name="name" type="text" placeholder="" class="form-control input-md" required="">
+
+              </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="artistName">Artist Name</label>
+              <div class="col-md-4">
+              <input id="textinput" name="artistName" type="text" placeholder="" class="form-control input-md">
+
+              </div>
+            </div>
+
+            <!-- Text input-->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="releaseDate">Release Date</label>
+              <div class="col-md-4">
+              <input id="releaseDate" name="releaseDate" type="text" placeholder="1992" class="form-control input-md">
+
+              </div>
+            </div>
+
+            <!-- Textarea -->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="genres">Genres (separated by commas)</label>
+              <div class="col-md-4">
+                <textarea class="form-control" id="genres" name="genres">rock, pop</textarea>
+              </div>
+            </div>
+
+
+            <!-- Button -->
+            <div class="form-group">
+              <label class="col-md-4 control-label" for="singlebutton">Save Album</label>
+              <div class="col-md-4">
+                <button id="singlebutton" name="singlebutton" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      </div>
+    </section>
+
+     <!--   END FORM SAMPLE -->
+
+
+
 
     <section class="container">
       <div class="row">
@@ -33,57 +108,6 @@
       </div>
       <!-- albums! -->
       <div id='albums'>
-
-
-
-
-          <!-- one album -->
-          <div class="row album">
-
-            <div class="col-md-10 col-md-offset-1">
-              <div class="panel panel-default">
-                <div class="panel-body">
-
-
-                <!-- begin album internal row -->
-                  <div class='row'>
-                    <div class="col-md-3 col-xs-12 thumbnail album-art">
-                      <img src="http://placehold.it/800x800" alt="album image">
-                    </div>
-
-                    <div class="col-md-9 col-xs-12">
-                      <ul class="list-group">
-                        <li class="list-group-item">
-                          <h4 class='inline-header'>Album Name:</h4>
-                          <span class='album-name'>Ladyhawke</span>
-                        </li>
-
-                        <li class="list-group-item">
-                          <h4 class='inline-header'>Artist Name:</h4>
-                          <span class='artist-name'>Ladyhawke</span>
-                        </li>
-
-                        <li class="list-group-item">
-                          <h4 class='inline-header'>Released date:</h4>
-                          <span class='album-releaseDate'>2008, November 18</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                  </div>
-                  <!-- end of album internal row -->
-
-                  <div class='panel-footer'>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- end one album -->
-
-
-
 
       </div>
     </section>
@@ -118,7 +142,6 @@
             </div>
 
             </fieldset>
-
 
           </div>
           <div class="modal-footer">
