@@ -16,7 +16,8 @@
 
     <!-- APPLICATION SCRIPTS -->
     <script src="js/app.js"></script>
-  </head>
+
+
   <body>
     <div class="jumbotron">
       <div class="container">
@@ -26,10 +27,15 @@
     </div>
 
 
-
-
     <!-- BEGIN FORM SAMPLE -->
-
+    <div class="fb-login">
+        {{#if user }}
+            {{user.fb.firstName}} {{user.fb.lastName}},
+          <a href="/logout">Logout</a>
+        {{else}}
+          <a href="/auth/facebook">Login with Facebook</a>
+        {{/if}}
+    </div>
     <section id='album-form' class="container">
       <div class="row">
       <div class="col-md-10 col-md-offset-1">

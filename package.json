@@ -20,6 +20,14 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
-    "mongoose": "^4.2.9"
+    "express-session": "^1.0.4",
+    "mongoose": "^4.2.9",
+    "body-parser": "~1.0.0",
+    "connect-flash": "~0.1.1",
+    "cookie-parser": "^1.0.1",
+    "hbs": "^4.0.0",
+    "method-override": "^1.0.2",
+    "passport": "^0.2.0",
+    "passport-facebook": "^2.0.0"
   }
 }

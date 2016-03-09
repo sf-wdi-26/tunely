@@ -4,12 +4,23 @@
 var express = require('express');
 // generate a new express app and call it 'app'
 var app = express();
+var path = require('path');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var expressSession = require('express-session');
+var cookieParser   = require("cookie-parser");
 
 // serve static files from public folder
+app.use( cookieParser() );
+app.use(expressSession({secret: 'mySecretKey'}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
 /************
  * DATABASE *
@@ -25,11 +36,25 @@ var db = require('./models');
  * HTML Endpoints
  */
 
+require("./config/passport")(passport)
+
 app.get('/', function homepage (req, res) {
-  res.sendFile(__dirname + '/views/index.html');
+  res.render('index', {user: req.user});
 });
 
+app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email'} ));
 
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect: '/',
+    failureRedirect: '/'
+  })
+);
+
+app.get("/logout", function(req, res){
+  req.logout();
+  res.redirect("/")
+});
 /*
  * JSON API Endpoints
  */
